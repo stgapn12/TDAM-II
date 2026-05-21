@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Álgebra: Polinomios</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --a1:#0a1628;--a2:#0d2b5e;--a3:#1565c0;--a4:#1e88e5;--a5:#42a5f5;
+    --a6:#90caf9;--a7:#bbdefb;--a8:#e3f2fd;--w:#ffffff;
+  }
+  body{font-family:'Segoe UI',sans-serif;background:var(--a8);color:var(--a1);}
+  nav{background:linear-gradient(135deg,var(--a1),var(--a2));position:sticky;top:0;z-index:100;box-shadow:0 4px 15px rgba(0,0,0,.4);}
+  .nav-brand{background:var(--a3);padding:14px 30px;font-size:1.3rem;font-weight:700;color:var(--w);display:flex;align-items:center;gap:10px;}
+  .nav-links{display:flex;flex-wrap:wrap;padding:0 20px;}
+  .nav-links a{color:var(--a6);text-decoration:none;padding:14px 16px;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;transition:all .3s;cursor:pointer;}
+  .nav-links a:hover,.nav-links a.active{color:var(--w);border-bottom-color:var(--a5);background:rgba(255,255,255,.07);}
+  section{display:none;padding:40px 20px;min-height:80vh;}
+  section.active{display:block;}
+  .container{max-width:960px;margin:auto;}
+  .page-title{text-align:center;margin-bottom:30px;}
+  .page-title h2{font-size:1.9rem;color:var(--a2);border-bottom:4px solid var(--a4);display:inline-block;padding-bottom:8px;}
+  .page-title p{color:#555;margin-top:10px;}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,var(--a2),var(--a3));border-radius:20px;padding:60px 40px;text-align:center;color:var(--w);box-shadow:0 10px 40px rgba(13,43,94,.4);margin-bottom:30px;}
+  .hero h1{font-size:2.4rem;margin-bottom:15px;}
+  .hero p{font-size:1.1rem;color:var(--a7);line-height:1.8;max-width:600px;margin:auto;}
+  .emoji-big{font-size:4rem;margin-bottom:20px;display:block;}
+  .mot-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:30px;}
+  .mot-card{background:rgba(255,255,255,.1);border-radius:15px;padding:25px;border:1px solid rgba(255,255,255,.2);transition:transform .3s;}
+  .mot-card:hover{transform:translateY(-5px);}
+  .mot-card .icon{font-size:2rem;margin-bottom:10px;}
+  .mot-card h3{font-size:1rem;margin-bottom:8px;}
+  .mot-card p{font-size:.85rem;color:var(--a7);}
+
+  /* TEORIA */
+  .tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:20px;}
+  .tcard{background:var(--w);border-radius:15px;padding:25px;border-top:5px solid var(--a4);box-shadow:0 4px 20px rgba(21,101,192,.15);transition:transform .3s,box-shadow .3s;}
+  .tcard:hover{transform:translateY(-5px);box-shadow:0 8px 30px rgba(21,101,192,.25);}
+  .tcard h3{color:var(--a3);font-size:1.15rem;margin-bottom:12px;}
+  .tcard p{font-size:.92rem;line-height:1.7;color:#333;margin-bottom:8px;}
+  .formula{background:var(--a8);border-left:4px solid var(--a4);padding:12px 16px;border-radius:8px;margin:10px 0;font-family:monospace;font-size:1rem;color:var(--a2);font-weight:600;}
+  .badge{display:inline-block;background:var(--a3);color:white;border-radius:20px;padding:3px 12px;font-size:.78rem;margin:3px;}
+
+  /* OPERACIONES */
+  .op-tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:25px;}
+  .op-tab{background:var(--w);border:2px solid var(--a5);color:var(--a3);padding:10px 22px;border-radius:30px;cursor:pointer;font-weight:600;transition:all .3s;font-size:.9rem;}
+  .op-tab:hover,.op-tab.active{background:var(--a3);color:white;border-color:var(--a3);}
+  .op-content{display:none;}
+  .op-content.active{display:block;}
+  .op-box{background:white;border-radius:15px;padding:30px;box-shadow:0 4px 20px rgba(21,101,192,.1);}
+  .op-box h3{color:var(--a3);font-size:1.3rem;margin-bottom:15px;}
+  .op-box p{line-height:1.8;color:#333;margin-bottom:12px;}
+  .paso{background:var(--a8);border-radius:10px;padding:14px 18px;margin:8px 0;border-left:4px solid var(--a4);font-size:.93rem;}
+  .paso strong{color:var(--a3);}
+  .regla-box{background:linear-gradient(135deg,var(--a2),var(--a3));color:white;border-radius:12px;padding:18px 22px;margin:15px 0;}
+  .regla-box h4{margin-bottom:8px;font-size:1rem;}
+  .regla-box p,.regla-box li{font-size:.9rem;color:var(--a7);line-height:1.8;}
+  .regla-box ul{padding-left:20px;}
+  .ejemplo-extra{background:#f0f7ff;border:1px solid var(--a6);border-radius:12px;padding:20px;margin:15px 0;}
+  .ejemplo-extra h4{color:var(--a3);margin-bottom:10px;}
+  .ejemplos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;margin-top:15px;}
+  .ej-card{background:var(--a8);border-radius:10px;padding:15px;border-top:3px solid var(--a5);}
+  .ej-card h5{color:var(--a3);margin-bottom:8px;font-size:.95rem;}
+  .ej-card p{font-size:.88rem;color:#333;line-height:1.7;}
+
+  /* ACTIVIDADES */
+  .act-filter{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:25px;}
+  .act-filter-btn{background:var(--w);border:2px solid var(--a5);color:var(--a3);padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:600;font-size:.88rem;transition:all .3s;}
+  .act-filter-btn:hover,.act-filter-btn.active{background:var(--a3);color:white;border-color:var(--a3);}
+  .act-section{display:none;}
+  .act-section.active{display:block;}
+  .acard{background:white;border-radius:15px;padding:28px;margin-bottom:22px;box-shadow:0 4px 20px rgba(21,101,192,.1);border-left:5px solid var(--a4);}
+  .acard h3{color:var(--a3);margin-bottom:12px;font-size:1.05rem;}
+  .acard p{margin-bottom:14px;line-height:1.7;}
+  .opciones{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;}
+  .opcion-btn{background:var(--a8);border:2px solid var(--a6);border-radius:10px;padding:11px 20px;cursor:pointer;font-size:.93rem;transition:all .3s;}
+  .opcion-btn:hover:not(:disabled){background:var(--a7);}
+  .opcion-btn.correcto{background:#c8e6c9;border-color:#4caf50;color:#1b5e20;font-weight:700;}
+  .opcion-btn.incorrecto{background:#ffcdd2;border-color:#f44336;color:#b71c1c;}
+  .feedback{padding:12px 18px;border-radius:10px;margin-top:10px;font-weight:600;display:none;font-size:.93rem;}
+  .feedback.show-ok{background:#c8e6c9;color:#1b5e20;display:block;}
+  .feedback.show-err{background:#ffcdd2;color:#b71c1c;display:block;}
+  .act-progress{background:var(--a7);border-radius:30px;height:14px;margin:15px 0;overflow:hidden;}
+  .act-progress-bar{background:linear-gradient(90deg,var(--a3),var(--a5));height:100%;border-radius:30px;transition:width .5s;}
+  .act-score{font-weight:700;color:var(--a2);margin-bottom:5px;}
+
+  /* PRACTICA */
+  .pbox{background:white;border-radius:15px;padding:35px;box-shadow:0 4px 20px rgba(21,101,192,.1);}
+  .ptabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:25px;}
+  .ptab{background:var(--w);border:2px solid var(--a5);color:var(--a3);padding:9px 20px;border-radius:25px;cursor:pointer;font-weight:600;font-size:.88rem;transition:all .3s;}
+  .ptab:hover,.ptab.active{background:var(--a4);color:white;border-color:var(--a4);}
+  .ej-display{background:linear-gradient(135deg,var(--a2),var(--a3));color:white;border-radius:15px;padding:28px;margin:20px 0;font-size:1.35rem;font-weight:700;text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;}
+  .pinput{border:2px solid var(--a5);border-radius:12px;padding:14px 20px;font-size:1.1rem;width:100%;max-width:380px;outline:none;text-align:center;color:var(--a1);display:block;margin:0 auto;}
+  .pinput:focus{border-color:var(--a3);}
+  .btnp{background:linear-gradient(135deg,var(--a3),var(--a4));color:white;border:none;border-radius:30px;padding:13px 36px;font-size:1rem;font-weight:700;cursor:pointer;margin:12px 8px;transition:all .3s;box-shadow:0 4px 15px rgba(21,101,192,.3);}
+  .btnp:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(21,101,192,.4);}
+  .btns{background:white;color:var(--a3);border:2px solid var(--a3);border-radius:30px;padding:12px 36px;font-size:1rem;font-weight:700;cursor:pointer;margin:12px 8px;transition:all .3s;}
+  .btns:hover{background:var(--a8);}
+  .sbar-bg{background:var(--a7);border-radius:30px;height:18px;margin:12px 0;overflow:hidden;}
+  .sbar{background:linear-gradient(90deg,var(--a3),var(--a5));height:100%;border-radius:30px;transition:width .5s;}
+  .stext{font-size:1.05rem;color:var(--a2);font-weight:700;margin:8px 0;}
+  .rmsg{padding:14px;border-radius:12px;margin:14px 0;font-weight:600;display:none;}
+  .hint-text{margin-top:12px;color:#555;font-size:.88rem;}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px;}
+  .stat-box{background:var(--a8);border-radius:12px;padding:18px;text-align:center;border-top:3px solid var(--a4);}
+  .stat-box .num{font-size:1.8rem;font-weight:800;color:var(--a3);}
+  .stat-box .lbl{font-size:.82rem;color:#555;margin-top:4px;}
+
+  footer{background:linear-gradient(135deg,var(--a1),var(--a2));color:var(--a6);text-align:center;padding:25px;font-size:.9rem;}
+  footer strong{color:var(--w);}
+
+/* Calculadora */
+.calc-key{background:var(--w);border:2px solid var(--a6);border-radius:10px;padding:12px 6px;font-size:1rem;font-weight:600;cursor:pointer;text-align:center;color:var(--a2);transition:all .15s;}
+.calc-key:hover{background:var(--a7);}
+.op-key{color:var(--a3);}
+.del-key{color:#c62828;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>📐</span> Álgebra Interactiva</div>
+  <div class="nav-links">
+    <a onclick="showSec('inicio')" class="active" id="nav-inicio">🏠 Inicio</a>
+    <a onclick="showSec('teoria')" id="nav-teoria">📚 Teoría</a>
+    <a onclick="showSec('operaciones')" id="nav-operaciones">➕ Operaciones</a>
+    <a onclick="showSec('actividades')" id="nav-actividades">🎯 Actividades</a>
+    <a onclick="showSec('practica')" id="nav-practica">✏️ Práctica</a>
+  </div>
+</nav>
+
+<!-- INICIO -->
+<section id="inicio" class="active">
+  <div class="container">
+    <div class="hero">
+      <span class="emoji-big">🚀</span>
+      <h1>¡Bienvenido al Mundo de los Polinomios!</h1>
+      <p>Las matemáticas no son difíciles, ¡son un superpoder! Aquí aprenderás de forma fácil, divertida e interactiva todo sobre monomios, binomios, trinomios y polinomios.</p>
+      <div class="mot-cards">
+        <div class="mot-card"><div class="icon">🧠</div><h3>Aprende a tu ritmo</h3><p>Teoría clara y ejemplos paso a paso para que entiendas cada concepto.</p></div>
+        <div class="mot-card"><div class="icon">🎯</div><h3>Practica y mejora</h3><p>Ejercicios interactivos con retroalimentación inmediata.</p></div>
+        <div class="mot-card"><div class="icon">🏆</div><h3>Supérate cada día</h3><p>Cada error es una oportunidad de crecer. ¡Tú puedes lograrlo!</p></div>
+        <div class="mot-card"><div class="icon">💡</div><h3>Las mates son útiles</h3><p>Los polinomios están en la física, tecnología, economía y mucho más.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEORIA -->
+<section id="teoria">
+  <div class="container">
+    <div class="page-title"><h2>📚 Teoría</h2><p>Conoce y comprende los conceptos fundamentales</p></div>
+    <div class="tgrid">
+      <div class="tcard">
+        <h3>🔵 Monomio</h3>
+        <p>Es una expresión algebraica formada por <strong>un solo término</strong>. Puede ser un número, una variable o su producto.</p>
+        <div class="formula">5x² &nbsp;|&nbsp; -3y &nbsp;|&nbsp; 7 &nbsp;|&nbsp; 4ab²</div>
+        <p><strong>Partes del monomio:</strong></p>
+        <span class="badge">Coeficiente</span><span class="badge">Variable</span><span class="badge">Exponente</span>
+        <p style="margin-top:10px;font-size:.88rem;">En <strong>4x³</strong>: coeficiente=4, variable=x, grado=3.</p>
+      </div>
+      <div class="tcard">
+        <h3>🟦 Binomio</h3>
+        <p>Expresión algebraica formada por la <strong>suma o resta de dos monomios</strong>.</p>
+        <div class="formula">3x + 5 &nbsp;|&nbsp; 2x² - 7y</div>
+        <p>Su grado es el mayor exponente de sus variables.</p>
+        <span class="badge">2 términos</span><span class="badge">Grado = mayor exp.</span>
+      </div>
+      <div class="tcard">
+        <h3>🔷 Trinomio</h3>
+        <p>Expresión algebraica formada por <strong>exactamente tres términos</strong>.</p>
+        <div class="formula">x² + 5x - 6</div>
+        <p>Trinomio cuadrado perfecto:</p>
+        <div class="formula">(a ± b)² = a² ± 2ab + b²</div>
+      </div>
+      <div class="tcard">
+        <h3>🌐 Polinomio</h3>
+        <p>Expresión algebraica con <strong>dos o más términos</strong>. Monomios, binomios y trinomios son todos polinomios.</p>
+        <div class="formula">2x³ - 4x² + x - 8</div>
+        <span class="badge">Grado 1: Lineal</span><span class="badge">Grado 2: Cuadrático</span><span class="badge">Grado 3: Cúbico</span>
+      </div>
+      <div class="tcard">
+        <h3>📋 Términos Semejantes</h3>
+        <p>Tienen la <strong>misma parte literal</strong> (misma variable y exponente). Solo ellos pueden sumarse o restarse.</p>
+        <div class="formula">3x² y 5x² → semejantes ✅</div>
+        <div class="formula">3x² y 5x³ → NO semejantes ❌</div>
+      </div>
+      <div class="tcard">
+        <h3>📏 Grado de un Polinomio</h3>
+        <p>Es el <strong>mayor exponente</strong> entre todos sus términos.</p>
+        <div class="formula">4x⁵ + 2x³ - x + 1 → Grado 5</div>
+        <p>Si hay varias variables: el grado del término es la suma de sus exponentes.</p>
+        <div class="formula">3x²y³ → grado 5 (2+3)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPERACIONES -->
+<section id="operaciones">
+  <div class="container">
+    <div class="page-title"><h2>➕ Operaciones</h2><p>Aprende cada operación con reglas, ejemplos múltiples y casos especiales</p></div>
+    <div class="op-tabs">
+      <button class="op-tab active" onclick="showOp(this,'op-suma')">➕ Suma</button>
+      <button class="op-tab" onclick="showOp(this,'op-resta')">➖ Resta</button>
+      <button class="op-tab" onclick="showOp(this,'op-mult')">✖️ Multiplicación</button>
+      <button class="op-tab" onclick="showOp(this,'op-div')">➗ División</button>
+    </div>
+
+    <!-- SUMA -->
+    <div class="op-content active" id="op-suma">
+      <div class="op-box">
+        <h3>➕ Suma de Polinomios</h3>
+        <div class="regla-box">
+          <h4>📌 Reglas fundamentales</h4>
+          <ul>
+            <li>Solo se pueden sumar <strong>términos semejantes</strong> (misma variable y exponente).</li>
+            <li>Se suman únicamente los <strong>coeficientes</strong>, la parte literal no cambia.</li>
+            <li>Los términos que no tienen semejantes se bajan tal como están.</li>
+            <li>El signo de cada término va junto con su coeficiente.</li>
+          </ul>
+        </div>
+        <p><strong>✏️ Ejemplo 1 básico:</strong> (3x² + 2x - 1) + (x² - 5x + 4)</p>
+        <div class="paso"><strong>Paso 1 — Identificar semejantes:</strong> (3x² y x²), (2x y -5x), (-1 y 4)</div>
+        <div class="paso"><strong>Paso 2 — Sumar coeficientes:</strong> 3+1=4 → 4x² | 2+(-5)=-3 → -3x | -1+4=3</div>
+        <div class="paso"><strong>Resultado:</strong> 4x² - 3x + 3 ✅</div>
+        <div class="ejemplos-grid">
+          <div class="ej-card">
+            <h5>Ejemplo 2 — Con una variable</h5>
+            <p>(5x³ - 2x + 7) + (3x³ + x - 4)<br>= (5+3)x³ + (-2+1)x + (7-4)<br>= <strong>8x³ - x + 3</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 3 — Con dos variables</h5>
+            <p>(4x² + 3y - 1) + (x² - 3y + 5)<br>= 5x² + 0y + 4<br>= <strong>5x² + 4</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 4 — Tres polinomios</h5>
+            <p>(x+2) + (3x-1) + (2x+5)<br>= (1+3+2)x + (2-1+5)<br>= <strong>6x + 6</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 5 — Grado 3</h5>
+            <p>(2x³+x²-4) + (-x³+3x²+4)<br>= x³ + 4x² + 0<br>= <strong>x³ + 4x²</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESTA -->
+    <div class="op-content" id="op-resta">
+      <div class="op-box">
+        <h3>➖ Resta de Polinomios</h3>
+        <div class="regla-box">
+          <h4>📌 Reglas fundamentales</h4>
+          <ul>
+            <li>Se cambia el signo de <strong>todos</strong> los términos del sustraendo (el que se resta).</li>
+            <li>Después del cambio de signo, se procede igual que en la suma.</li>
+            <li>¡No olvides cambiar el signo de CADA término, no solo el primero!</li>
+            <li>Un término sin signo visible es positivo (+).</li>
+          </ul>
+        </div>
+        <p><strong>✏️ Ejemplo 1 básico:</strong> (5x² - 3x + 2) - (2x² + x - 4)</p>
+        <div class="paso"><strong>Paso 1 — Cambiar signos del sustraendo:</strong> -(2x² + x - 4) = -2x² - x + 4</div>
+        <div class="paso"><strong>Paso 2 — Reescribir:</strong> 5x² - 3x + 2 - 2x² - x + 4</div>
+        <div class="paso"><strong>Paso 3 — Combinar semejantes:</strong> (5-2)x² + (-3-1)x + (2+4)</div>
+        <div class="paso"><strong>Resultado:</strong> 3x² - 4x + 6 ✅</div>
+        <div class="ejemplos-grid">
+          <div class="ej-card">
+            <h5>Ejemplo 2 — Binomios</h5>
+            <p>(7x + 3) - (4x - 5)<br>= 7x + 3 - 4x + 5<br>= <strong>3x + 8</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 3 — Cuidado de signos</h5>
+            <p>(3x² - x) - (-2x² + 4x)<br>= 3x² - x + 2x² - 4x<br>= <strong>5x² - 5x</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 4 — Grado 3</h5>
+            <p>(4x³+2x-1) - (x³-3x+6)<br>= 4x³+2x-1-x³+3x-6<br>= <strong>3x³ + 5x - 7</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 5 — Con 3 términos distintos</h5>
+            <p>(6x²+4x+9) - (2x²+4x+3)<br>= 6x²+4x+9-2x²-4x-3<br>= <strong>4x² + 6</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MULTIPLICACION -->
+    <div class="op-content" id="op-mult">
+      <div class="op-box">
+        <h3>✖️ Multiplicación de Polinomios</h3>
+        <div class="regla-box">
+          <h4>📌 Reglas fundamentales</h4>
+          <ul>
+            <li><strong>Propiedad distributiva:</strong> cada término del primer polinomio multiplica a todos los del segundo.</li>
+            <li><strong>Regla de exponentes:</strong> x^m · x^n = x^(m+n) — se suman los exponentes.</li>
+            <li><strong>Regla de signos:</strong> (+)(+)=+ | (−)(−)=+ | (+)(−)=− | (−)(+)=−</li>
+            <li>Los coeficientes se multiplican entre sí normalmente.</li>
+            <li>Al final se combinan los términos semejantes.</li>
+          </ul>
+        </div>
+        <p><strong>✏️ Ejemplo 1 — Monomio × Binomio:</strong> 3x · (2x + 5)</p>
+        <div class="paso"><strong>Distribuir:</strong> 3x·2x = 6x² | 3x·5 = 15x</div>
+        <div class="paso"><strong>Resultado:</strong> 6x² + 15x ✅</div>
+        <p style="margin-top:15px;"><strong>✏️ Ejemplo 2 — Binomio × Binomio (FOIL):</strong> (2x + 3)(x - 4)</p>
+        <div class="paso"><strong>Primeros:</strong> 2x · x = 2x²</div>
+        <div class="paso"><strong>Externos:</strong> 2x · (-4) = -8x</div>
+        <div class="paso"><strong>Internos:</strong> 3 · x = 3x</div>
+        <div class="paso"><strong>Últimos:</strong> 3 · (-4) = -12</div>
+        <div class="paso"><strong>Combinar semejantes:</strong> 2x² + (-8x+3x) - 12 = <strong>2x² - 5x - 12</strong> ✅</div>
+        <div class="ejemplos-grid">
+          <div class="ej-card">
+            <h5>Ejemplo 3 — Monomio × Trinomio</h5>
+            <p>2x · (x² - 3x + 4)<br>= 2x·x² + 2x·(-3x) + 2x·4<br>= <strong>2x³ - 6x² + 8x</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 4 — (a+b)(a-b)</h5>
+            <p>(x+5)(x-5)<br>= x²-5x+5x-25<br>= <strong>x² - 25</strong> (diferencia de cuadrados)</p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 5 — Trinomio × Binomio</h5>
+            <p>(x²+2x-1)(x+3)<br>= x³+3x²+2x²+6x-x-3<br>= <strong>x³ + 5x² + 5x - 3</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 6 — Cuadrado de binomio</h5>
+            <p>(x+4)² = (x+4)(x+4)<br>= x²+4x+4x+16<br>= <strong>x² + 8x + 16</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIVISION -->
+    <div class="op-content" id="op-div">
+      <div class="op-box">
+        <h3>➗ División de Polinomios</h3>
+        <div class="regla-box">
+          <h4>📌 Reglas fundamentales</h4>
+          <ul>
+            <li><strong>Polinomio ÷ Monomio:</strong> divide cada término del numerador entre el divisor.</li>
+            <li><strong>Regla de exponentes:</strong> x^m ÷ x^n = x^(m-n) — se restan los exponentes.</li>
+            <li>Los coeficientes se dividen entre sí normalmente.</li>
+            <li>Si m=n, el resultado es x⁰ = 1.</li>
+            <li>Verifica: Cociente × Divisor = Dividendo.</li>
+          </ul>
+        </div>
+        <p><strong>✏️ Ejemplo 1 — Polinomio ÷ Monomio:</strong> (6x³ - 4x² + 2x) ÷ 2x</p>
+        <div class="paso"><strong>Paso 1:</strong> 6x³ ÷ 2x = 3x²</div>
+        <div class="paso"><strong>Paso 2:</strong> -4x² ÷ 2x = -2x</div>
+        <div class="paso"><strong>Paso 3:</strong> 2x ÷ 2x = 1</div>
+        <div class="paso"><strong>Resultado:</strong> 3x² - 2x + 1 ✅ | Verifica: 2x(3x²-2x+1) = 6x³-4x²+2x ✔</div>
+        <div class="ejemplos-grid">
+          <div class="ej-card">
+            <h5>Ejemplo 2 — Básico</h5>
+            <p>(8x⁴ + 4x²) ÷ 4x²<br>= 8x⁴/4x² + 4x²/4x²<br>= <strong>2x² + 1</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 3 — Coeficientes fraccionarios</h5>
+            <p>(9x³ - 6x² + 3x) ÷ 3x<br>= 9x³/3x - 6x²/3x + 3x/3x<br>= <strong>3x² - 2x + 1</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 4 — Con dos variables</h5>
+            <p>(10x²y - 5xy²) ÷ 5xy<br>= 10x²y/5xy - 5xy²/5xy<br>= <strong>2x - y</strong></p>
+          </div>
+          <div class="ej-card">
+            <h5>Ejemplo 5 — Grado alto</h5>
+            <p>(12x⁵ - 8x³ + 4x) ÷ 4x<br>= 12x⁵/4x - 8x³/4x + 4x/4x<br>= <strong>3x⁴ - 2x² + 1</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTIVIDADES -->
+<section id="actividades">
+  <div class="container">
+    <div class="page-title"><h2>🎯 Actividades</h2><p>Selecciona una categoría y pon a prueba tus conocimientos</p></div>
+    <div class="act-score" id="actScore">Aciertos: 0 de 0</div>
+    <div class="act-progress"><div class="act-progress-bar" id="actBar" style="width:0%"></div></div>
+    <div class="act-filter">
+      <button class="act-filter-btn active" onclick="showAct(this,'act-identificar')">🔍 Identificar</button>
+      <button class="act-filter-btn" onclick="showAct(this,'act-suma')">➕ Suma</button>
+      <button class="act-filter-btn" onclick="showAct(this,'act-resta')">➖ Resta</button>
+      <button class="act-filter-btn" onclick="showAct(this,'act-mult')">✖️ Multiplicación</button>
+      <button class="act-filter-btn" onclick="showAct(this,'act-div')">➗ División</button>
+      <button class="act-filter-btn" onclick="showAct(this,'act-grado')">📏 Grado</button>
+    </div>
+
+    <!-- IDENTIFICAR -->
+    <div class="act-section active" id="act-identificar">
+  <div class="acard">
+    <h3>1. ¿Qué tipo de expresión es <strong>7x³</strong>?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'i1','7x³ tiene un solo término: es un monomio.')">Monomio</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i1','7x³ tiene un solo término: es un monomio.')">Binomio</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i1','7x³ tiene un solo término: es un monomio.')">Trinomio</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i1','7x³ tiene un solo término: es un monomio.')">Polinomio</button>
+    </div>
+    <div class="feedback" id="i1"></div>
+  </div>
+  <div class="acard">
+    <h3>2. ¿Qué tipo de expresión es <strong>5x² - 3x + 2</strong>?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,false,'i2','Tiene exactamente 3 términos: es un trinomio.')">Monomio</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i2','Tiene exactamente 3 términos: es un trinomio.')">Binomio</button>
+      <button class="opcion-btn" onclick="chk(this,true,'i2','Tiene exactamente 3 términos: es un trinomio.')">Trinomio</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i2','Tiene exactamente 3 términos: es un trinomio.')">Polinomio de 4 términos</button>
+    </div>
+    <div class="feedback" id="i2"></div>
+  </div>
+  <div class="acard">
+    <h3>3. ¿Cuántos términos tiene un binomio?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,false,'i3','Un binomio tiene exactamente 2 términos.')">1</button>
+      <button class="opcion-btn" onclick="chk(this,true,'i3','Un binomio tiene exactamente 2 términos.')">2</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i3','Un binomio tiene exactamente 2 términos.')">3</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i3','Un binomio tiene exactamente 2 términos.')">4</button>
+    </div>
+    <div class="feedback" id="i3"></div>
+  </div>
+  <div class="acard">
+    <h3>4. ¿Cuál es la parte literal de <strong>-8x⁴y²</strong>?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,false,'i4','La parte literal es x⁴y², las variables con sus exponentes.')">-8</button>
+      <button class="opcion-btn" onclick="chk(this,true,'i4','La parte literal es x⁴y², las variables con sus exponentes.')">x⁴y²</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i4','La parte literal es x⁴y², las variables con sus exponentes.')">4 y 2</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i4','La parte literal es x⁴y², las variables con sus exponentes.')">-8x</button>
+    </div>
+    <div class="feedback" id="i4"></div>
+  </div>
+  <div class="acard">
+    <h3>5. ¿Cuál es término semejante a <strong>-4x²</strong>?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'i5','9x² tiene la misma parte literal x².')">9x²</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i5','9x² tiene la misma parte literal x².')">4x³</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i5','9x² tiene la misma parte literal x².')">-4y²</button>
+      <button class="opcion-btn" onclick="chk(this,false,'i5','9x² tiene la misma parte literal x².')">x</button>
+    </div>
+    <div class="feedback" id="i5"></div>
+  </div>
+</div>
+
+    <!-- SUMA ACT -->
+    <div class="act-section" id="act-suma">
+  <div class="acard">
+    <h3>1. ¿Cuánto es (2x + 5) + (3x - 2)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'s1','2x+3x=5x y 5+(-2)=3. Resultado: 5x+3.')">5x + 3</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s1','2x+3x=5x y 5+(-2)=3. Resultado: 5x+3.')">5x - 3</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s1','2x+3x=5x y 5+(-2)=3. Resultado: 5x+3.')">6x + 3</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s1','2x+3x=5x y 5+(-2)=3. Resultado: 5x+3.')">5x + 7</button>
+    </div>
+    <div class="feedback" id="s1"></div>
+  </div>
+  <div class="acard">
+    <h3>2. ¿Cuánto es (x² + 3x) + (2x² - x)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'s2','x²+2x²=3x² y 3x+(-x)=2x.')">3x² + 2x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s2','x²+2x²=3x² y 3x+(-x)=2x.')">3x² - 2x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s2','x²+2x²=3x² y 3x+(-x)=2x.')">2x² + 2x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s2','x²+2x²=3x² y 3x+(-x)=2x.')">3x² + 4x</button>
+    </div>
+    <div class="feedback" id="s2"></div>
+  </div>
+  <div class="acard">
+    <h3>3. ¿Cuánto es (4x² - 2x + 1) + (x² + 5x - 3)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'s3','Suma semejantes: 5x², +3x, -2.')">5x² + 3x - 2</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s3','Suma semejantes: 5x², +3x, -2.')">5x² - 3x - 2</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s3','Suma semejantes: 5x², +3x, -2.')">4x² + 3x - 2</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s3','Suma semejantes: 5x², +3x, -2.')">5x² + 3x + 2</button>
+    </div>
+    <div class="feedback" id="s3"></div>
+  </div>
+  <div class="acard">
+    <h3>4. ¿Cuánto es (3x³ - x + 4) + (-3x³ + x - 4)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'s4','Todos los términos se cancelan. El resultado es 0.')">0</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s4','Todos los términos se cancelan. El resultado es 0.')">6x³</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s4','Todos los términos se cancelan. El resultado es 0.')">8</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s4','Todos los términos se cancelan. El resultado es 0.')">2x³ + 8</button>
+    </div>
+    <div class="feedback" id="s4"></div>
+  </div>
+  <div class="acard">
+    <h3>5. ¿Cuánto es (7x + 2) + (3x + 8) + (x - 5)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'s5','7x+3x+x=11x y 2+8-5=5.')">11x + 5</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s5','7x+3x+x=11x y 2+8-5=5.')">10x + 5</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s5','7x+3x+x=11x y 2+8-5=5.')">11x + 15</button>
+      <button class="opcion-btn" onclick="chk(this,false,'s5','7x+3x+x=11x y 2+8-5=5.')">11x - 5</button>
+    </div>
+    <div class="feedback" id="s5"></div>
+  </div>
+</div>
+    <!-- RESTA ACT -->
+    <div class="act-section" id="act-resta">
+  <div class="acard">
+    <h3>1. ¿Cuánto es (8x - 3) - (5x + 2)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'r1','Cambia signos: -5x-2. Luego: 8x-5x=3x y -3-2=-5.')">3x - 5</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r1','Cambia signos: -5x-2. Luego: 8x-5x=3x y -3-2=-5.')">3x + 5</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r1','Cambia signos: -5x-2. Luego: 8x-5x=3x y -3-2=-5.')">13x - 5</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r1','Cambia signos: -5x-2. Luego: 8x-5x=3x y -3-2=-5.')">3x - 1</button>
+    </div>
+    <div class="feedback" id="r1"></div>
+  </div>
+  <div class="acard">
+    <h3>2. ¿Cuánto es (5x² + 2x) - (3x² - x)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'r2','-(3x²-x)=-3x²+x. Luego: 5x²-3x²=2x² y 2x+x=3x.')">2x² + 3x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r2','-(3x²-x)=-3x²+x. Luego: 5x²-3x²=2x² y 2x+x=3x.')">2x² - 3x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r2','-(3x²-x)=-3x²+x. Luego: 5x²-3x²=2x² y 2x+x=3x.')">8x² + x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r2','-(3x²-x)=-3x²+x. Luego: 5x²-3x²=2x² y 2x+x=3x.')">2x² + x</button>
+    </div>
+    <div class="feedback" id="r2"></div>
+  </div>
+  <div class="acard">
+    <h3>3. ¿Cuánto es (6x³ - 4x + 7) - (2x³ + 4x - 7)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'r3','6x³-2x³=4x³, -4x-4x=-8x, 7+7=14.')">4x³ - 8x + 14</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r3','6x³-2x³=4x³, -4x-4x=-8x, 7+7=14.')">4x³ - 8x - 14</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r3','6x³-2x³=4x³, -4x-4x=-8x, 7+7=14.')">4x³ + 8x + 14</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r3','6x³-2x³=4x³, -4x-4x=-8x, 7+7=14.')">8x³ - 8x + 14</button>
+    </div>
+    <div class="feedback" id="r3"></div>
+  </div>
+  <div class="acard">
+    <h3>4. ¿Cuánto es (x² + 5) - (x² - 5)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'r4','x²-x²=0 y 5-(-5)=10. Solo queda 10.')">10</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r4','x²-x²=0 y 5-(-5)=10. Solo queda 10.')">0</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r4','x²-x²=0 y 5-(-5)=10. Solo queda 10.')">2x²</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r4','x²-x²=0 y 5-(-5)=10. Solo queda 10.')">2x² + 10</button>
+    </div>
+    <div class="feedback" id="r4"></div>
+  </div>
+  <div class="acard">
+    <h3>5. ¿Cuánto es (9x² - 3x + 1) - (4x² + 3x - 6)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'r5','9-4=5x², -3-3=-6x, 1+6=7.')">5x² - 6x + 7</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r5','9-4=5x², -3-3=-6x, 1+6=7.')">5x² + 6x + 7</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r5','9-4=5x², -3-3=-6x, 1+6=7.')">5x² - 6x - 7</button>
+      <button class="opcion-btn" onclick="chk(this,false,'r5','9-4=5x², -3-3=-6x, 1+6=7.')">13x² - 6x + 7</button>
+    </div>
+    <div class="feedback" id="r5"></div>
+  </div>
+</div>
+
+    <!-- MULT ACT -->
+    <div class="act-section" id="act-mult">
+  <div class="acard">
+    <h3>1. ¿Cuánto es 3x · (2x + 4)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'m1','3x·2x=6x² y 3x·4=12x.')">6x² + 12x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m1','3x·2x=6x² y 3x·4=12x.')">6x + 12x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m1','3x·2x=6x² y 3x·4=12x.')">6x² + 4</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m1','3x·2x=6x² y 3x·4=12x.')">5x² + 12x</button>
+    </div>
+    <div class="feedback" id="m1"></div>
+  </div>
+  <div class="acard">
+    <h3>2. ¿Cuánto es (x + 3)(x + 5)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'m2','x²+5x+3x+15 = x²+8x+15.')">x² + 8x + 15</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m2','x²+5x+3x+15 = x²+8x+15.')">x² + 15x + 8</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m2','x²+5x+3x+15 = x²+8x+15.')">x² + 8x - 15</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m2','x²+5x+3x+15 = x²+8x+15.')">x² + 2x + 15</button>
+    </div>
+    <div class="feedback" id="m2"></div>
+  </div>
+  <div class="acard">
+    <h3>3. ¿Cuánto es (x - 6)(x + 6)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'m3','Diferencia de cuadrados: x²-36.')">x² - 36</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m3','Diferencia de cuadrados: x²-36.')">x² + 36</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m3','Diferencia de cuadrados: x²-36.')">x² - 12x - 36</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m3','Diferencia de cuadrados: x²-36.')">x² + 12x - 36</button>
+    </div>
+    <div class="feedback" id="m3"></div>
+  </div>
+  <div class="acard">
+    <h3>4. ¿Cuánto es (2x + 1)²?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'m4','(2x+1)(2x+1)=4x²+2x+2x+1=4x²+4x+1.')">4x² + 4x + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m4','(2x+1)(2x+1)=4x²+2x+2x+1=4x²+4x+1.')">4x² + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m4','(2x+1)(2x+1)=4x²+2x+2x+1=4x²+4x+1.')">2x² + 4x + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m4','(2x+1)(2x+1)=4x²+2x+2x+1=4x²+4x+1.')">4x² - 4x + 1</button>
+    </div>
+    <div class="feedback" id="m4"></div>
+  </div>
+  <div class="acard">
+    <h3>5. ¿Cuánto es -2x · (x² - 3x + 5)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'m5','-2x·x²=-2x³, -2x·(-3x)=+6x², -2x·5=-10x.')">-2x³ + 6x² - 10x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m5','-2x·x²=-2x³, -2x·(-3x)=+6x², -2x·5=-10x.')">-2x³ - 6x² - 10x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m5','-2x·x²=-2x³, -2x·(-3x)=+6x², -2x·5=-10x.')">2x³ + 6x² - 10x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'m5','-2x·x²=-2x³, -2x·(-3x)=+6x², -2x·5=-10x.')">-2x³ + 6x² + 10x</button>
+    </div>
+    <div class="feedback" id="m5"></div>
+  </div>
+</div>
+
+    <!-- DIV ACT -->
+    <div class="act-section" id="act-div">
+  <div class="acard">
+    <h3>1. ¿Cuánto es (6x³ + 4x²) ÷ 2x?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'d1','6x³/2x=3x² y 4x²/2x=2x.')">3x² + 2x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d1','6x³/2x=3x² y 4x²/2x=2x.')">3x + 2</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d1','6x³/2x=3x² y 4x²/2x=2x.')">4x² + 2x</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d1','6x³/2x=3x² y 4x²/2x=2x.')">3x³ + 2x²</button>
+    </div>
+    <div class="feedback" id="d1"></div>
+  </div>
+  <div class="acard">
+    <h3>2. ¿Cuánto es (10x⁴ - 5x²) ÷ 5x²?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'d2','10x⁴/5x²=2x² y -5x²/5x²=-1.')">2x² - 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d2','10x⁴/5x²=2x² y -5x²/5x²=-1.')">2x² + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d2','10x⁴/5x²=2x² y -5x²/5x²=-1.')">5x² - 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d2','10x⁴/5x²=2x² y -5x²/5x²=-1.')">2x⁴ - 5</button>
+    </div>
+    <div class="feedback" id="d2"></div>
+  </div>
+  <div class="acard">
+    <h3>3. ¿Cuánto es (9x³ - 6x² + 3x) ÷ 3x?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'d3','9x³/3x=3x², -6x²/3x=-2x, 3x/3x=1.')">3x² - 2x + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d3','9x³/3x=3x², -6x²/3x=-2x, 3x/3x=1.')">3x² + 2x - 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d3','9x³/3x=3x², -6x²/3x=-2x, 3x/3x=1.')">6x² - 3x + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d3','9x³/3x=3x², -6x²/3x=-2x, 3x/3x=1.')">3x³ - 2x + 1</button>
+    </div>
+    <div class="feedback" id="d3"></div>
+  </div>
+  <div class="acard">
+    <h3>4. ¿Cuánto es (8x⁵ - 4x³) ÷ 4x³?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'d4','8x⁵/4x³=2x² y -4x³/4x³=-1.')">2x² - 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d4','8x⁵/4x³=2x² y -4x³/4x³=-1.')">2x³ - 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d4','8x⁵/4x³=2x² y -4x³/4x³=-1.')">4x² - 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d4','8x⁵/4x³=2x² y -4x³/4x³=-1.')">2x² + 1</button>
+    </div>
+    <div class="feedback" id="d4"></div>
+  </div>
+  <div class="acard">
+    <h3>5. ¿Cuánto es (15x⁴ - 10x³ + 5x²) ÷ 5x²?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'d5','15x⁴/5x²=3x², -10x³/5x²=-2x, 5x²/5x²=1.')">3x² - 2x + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d5','15x⁴/5x²=3x², -10x³/5x²=-2x, 5x²/5x²=1.')">3x² + 2x + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d5','15x⁴/5x²=3x², -10x³/5x²=-2x, 5x²/5x²=1.')">10x² - 5x + 1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'d5','15x⁴/5x²=3x², -10x³/5x²=-2x, 5x²/5x²=1.')">3x³ - 2x + 1</button>
+    </div>
+    <div class="feedback" id="d5"></div>
+  </div>
+</div>
+    <!-- GRADO ACT -->
+   <div class="act-section" id="act-grado">
+  <div class="acard">
+    <h3>1. ¿Cuál es el grado de <strong>7x⁴ - 3x + 1</strong>?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'g1','El mayor exponente es 4, en el término 7x⁴.')">4</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g1','El mayor exponente es 4, en el término 7x⁴.')">1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g1','El mayor exponente es 4, en el término 7x⁴.')">3</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g1','El mayor exponente es 4, en el término 7x⁴.')">0</button>
+    </div>
+    <div class="feedback" id="g1"></div>
+  </div>
+  <div class="acard">
+    <h3>2. ¿Cuál es el grado de <strong>-5</strong> (una constante)?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'g2','Las constantes tienen grado 0 porque x⁰=1.')">0</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g2','Las constantes tienen grado 0 porque x⁰=1.')">1</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g2','Las constantes tienen grado 0 porque x⁰=1.')">5</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g2','Las constantes tienen grado 0 porque x⁰=1.')">Ninguno</button>
+    </div>
+    <div class="feedback" id="g2"></div>
+  </div>
+  <div class="acard">
+    <h3>3. ¿Cuál es el grado del monomio <strong>4x²y³</strong>?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'g3','Con varias variables se suman los exponentes: 2+3=5.')">5</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g3','Con varias variables se suman los exponentes: 2+3=5.')">3</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g3','Con varias variables se suman los exponentes: 2+3=5.')">2</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g3','Con varias variables se suman los exponentes: 2+3=5.')">6</button>
+    </div>
+    <div class="feedback" id="g3"></div>
+  </div>
+  <div class="acard">
+    <h3>4. ¿Cuál es el grado de <strong>2x⁶ - x⁵ + 3x² - 7</strong>?</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,true,'g4','El mayor exponente en el polinomio es 6.')">6</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g4','El mayor exponente en el polinomio es 6.')">5</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g4','El mayor exponente en el polinomio es 6.')">2</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g4','El mayor exponente en el polinomio es 6.')">7</button>
+    </div>
+    <div class="feedback" id="g4"></div>
+  </div>
+  <div class="acard">
+    <h3>5. Un polinomio de grado 2 se llama...</h3>
+    <div class="opciones">
+      <button class="opcion-btn" onclick="chk(this,false,'g5','Grado 2 = cuadrático, grado 1 = lineal, grado 3 = cúbico.')">Lineal</button>
+      <button class="opcion-btn" onclick="chk(this,true,'g5','Grado 2 = cuadrático, grado 1 = lineal, grado 3 = cúbico.')">Cuadrático</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g5','Grado 2 = cuadrático, grado 1 = lineal, grado 3 = cúbico.')">Cúbico</button>
+      <button class="opcion-btn" onclick="chk(this,false,'g5','Grado 2 = cuadrático, grado 1 = lineal, grado 3 = cúbico.')">Cuártico</button>
+    </div>
+    <div class="feedback" id="g5"></div>
+  </div>
+</div>
+  </div>
+</section>
+
+<!-- PRACTICA -->
+<section id="practica">
+  <div class="container">
+    <div class="page-title"><h2>✏️ Práctica</h2><p>Usa la calculadora para escribir tu respuesta. ¡Más de 40 ejercicios!</p></div>
+    <div class="ptabs">
+      <button class="ptab active" onclick="setPTipo(this,'todos')">🎲 Todos</button>
+      <button class="ptab" onclick="setPTipo(this,'suma')">➕ Suma</button>
+      <button class="ptab" onclick="setPTipo(this,'resta')">➖ Resta</button>
+      <button class="ptab" onclick="setPTipo(this,'mult')">✖️ Mult.</button>
+      <button class="ptab" onclick="setPTipo(this,'div')">➗ Div.</button>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="num" id="pCorrect">0</div><div class="lbl">Correctas</div></div>
+      <div class="stat-box"><div class="num" id="pTotal">0</div><div class="lbl">Intentos</div></div>
+      <div class="stat-box"><div class="num" id="pPct">0%</div><div class="lbl">Precisión</div></div>
+    </div>
+    <div class="pbox">
+      <div class="sbar-bg"><div class="sbar" id="pBar" style="width:0%"></div></div>
+      <div class="ej-display" id="ejDisplay">Presiona "Nuevo Ejercicio" para comenzar 🎯</div>
+
+      <!-- Pantalla de respuesta -->
+      <div id="pScreen" style="background:var(--a8);border:2px solid var(--a5);border-radius:12px;padding:14px 20px;font-size:1.2rem;font-weight:700;text-align:center;min-height:50px;color:var(--a1);margin:0 auto 8px;max-width:380px;letter-spacing:.5px;">_</div>
+
+      <!-- Feedback -->
+      <div class="rmsg" id="rMsg"></div>
+
+      <!-- Calculadora -->
+      <div style="max-width:380px;margin:16px auto 0;display:grid;gap:8px;">
+        <!-- Fila 1: 7 8 9 + − -->
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
+          <button class="calc-key" onclick="kp('7')">7</button>
+          <button class="calc-key" onclick="kp('8')">8</button>
+          <button class="calc-key" onclick="kp('9')">9</button>
+          <button class="calc-key op-key" onclick="kp('+')">+</button>
+          <button class="calc-key op-key" onclick="kp('-')">−</button>
+        </div>
+        <!-- Fila 2: 4 5 6 x x² -->
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
+          <button class="calc-key" onclick="kp('4')">4</button>
+          <button class="calc-key" onclick="kp('5')">5</button>
+          <button class="calc-key" onclick="kp('6')">6</button>
+          <button class="calc-key op-key" onclick="kp('x')">x</button>
+          <button class="calc-key op-key" onclick="kp('x2')">x²</button>
+        </div>
+        <!-- Fila 3: 1 2 3 x³ x⁴ -->
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
+          <button class="calc-key" onclick="kp('1')">1</button>
+          <button class="calc-key" onclick="kp('2')">2</button>
+          <button class="calc-key" onclick="kp('3')">3</button>
+          <button class="calc-key op-key" onclick="kp('x3')">x³</button>
+          <button class="calc-key op-key" onclick="kp('x4')">x⁴</button>
+        </div>
+        <!-- Fila 4: 0 y y² ⌫ C -->
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
+          <button class="calc-key" onclick="kp('0')">0</button>
+          <button class="calc-key op-key" onclick="kp('y')">y</button>
+          <button class="calc-key op-key" onclick="kp('y2')">y²</button>
+          <button class="calc-key del-key" onclick="kBack()">⌫</button>
+          <button class="calc-key del-key" onclick="kClear()">C</button>
+        </div>
+        <!-- Fila 5: Verificar | Nuevo -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+          <button class="btnp" style="margin:0;" onclick="checkP()">✅ Verificar</button>
+          <button class="btns" style="margin:0;" onclick="newEj()">🔄 Nuevo</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>📐 <strong>Álgebra Interactiva</strong> — Operaciones con Polinomios</p>
+  <p style="margin-top:8px;font-size:.82rem;">Aprende · Practica · Domina las matemáticas 🚀</p>
+</footer>
+
+<script>
+// NAV
+function showSec(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+}
+// OP TABS
+function showOp(btn,id){
+  document.querySelectorAll('.op-content').forEach(o=>o.classList.remove('active'));
+  document.querySelectorAll('.op-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+// ACT FILTER
+function showAct(btn,id){
+  document.querySelectorAll('.act-section').forEach(a=>a.classList.remove('active'));
+  document.querySelectorAll('.act-filter-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ACTIVIDADES
+let aCorr=0,aTotal=0;
+function chk(btn, isCorrect, fbId, msg) {
+  const btns = btn.parentElement.querySelectorAll('.opcion-btn');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById(fbId);
+  aTotal++;
+  if (isCorrect) {
+    aCorr++;
+    btn.classList.add('correcto');
+    fb.textContent = '✅ ' + msg;
+    fb.className = 'feedback show-ok';
+  } else {
+    btn.classList.add('incorrecto');
+    fb.textContent = '❌ Incorrecto. ' + msg;
+    fb.className = 'feedback show-err';
+  }
+  document.getElementById('actScore').textContent = `Aciertos: ${aCorr} de ${aTotal}`;
+  const pct = Math.round((aCorr / aTotal) * 100);
+  document.getElementById('actBar').style.width = pct + '%';
+}
+
+// PRACTICA
+const EJERCICIOS = {
+  suma:[
+    {p:'(x+4)+(2x−1)',r:'3x+3'},{p:'(3x²+2x)+(x²−5x)',r:'4x2−3x'},
+    {p:'(5x−7)+(2x+7)',r:'7x'},{p:'(2x²−x+4)+(x²+3x−2)',r:'3x2+2x+2'},
+    {p:'(6x³+2x)+(x³−2x)',r:'7x3'},{p:'(4x+3)+(3x+4)',r:'7x+7'},
+    {p:'(8x−1)+(x+1)',r:'9x'},{p:'(7x³−4x²)+(3x³+4x²)',r:'10x3'},
+    {p:'(2x²+3x+1)+(x²+x+1)',r:'3x2+4x+2'},{p:'(x²+5x−3)+(2x²−5x+3)',r:'3x2'},
+  ],
+  resta:[
+    {p:'(5x+8)−(3x+2)',r:'2x+6'},{p:'(4x²−3x)−(x²+x)',r:'3x2−4x'},
+    {p:'(7x−5)−(7x+5)',r:'−10'},{p:'(3x²+2x−1)−(x²−2x+1)',r:'2x2+4x−2'},
+    {p:'(9x³−x)−(4x³+x)',r:'5x3−2x'},{p:'(6x+4)−(2x−4)',r:'4x+8'},
+    {p:'(10x−3)−(4x−3)',r:'6x'},{p:'(x²+x+1)−(x²+x+1)',r:'0'},
+    {p:'(5x²−8x+3)−(3x²−2x−1)',r:'2x2−6x+4'},{p:'(8x²+4x−6)−(2x²−4x+6)',r:'6x2+8x−12'},
+  ],
+  mult:[
+    {p:'2x·(x+3)',r:'2x2+6x'},{p:'(x+2)(x+4)',r:'x2+6x+8'},
+    {p:'3x·(2x−5)',r:'6x2−15x'},{p:'(x−3)(x−3)',r:'x2−6x+9'},
+    {p:'(x+7)(x−7)',r:'x2−49'},{p:'4x²·(3x−1)',r:'12x3−4x2'},
+    {p:'(2x+3)(2x−3)',r:'4x2−9'},{p:'(3x−2)²',r:'9x2−12x+4'},
+    {p:'−x·(x²−4x+3)',r:'−x3+4x2−3x'},{p:'(x+1)²',r:'x2+2x+1'},
+  ],
+  div:[
+    {p:'(4x²+8x)÷2x',r:'2x+4'},{p:'(9x³−6x)÷3x',r:'3x2−2'},
+    {p:'(12x⁴+4x²)÷4x²',r:'3x2+1'},{p:'(6x³−9x²+3x)÷3x',r:'2x2−3x+1'},
+    {p:'(10x⁵−5x³)÷5x³',r:'2x2−1'},{p:'(8x²+4x)÷4x',r:'2x+1'},
+    {p:'(15x⁶−10x⁴)÷5x⁴',r:'3x2−2'},{p:'(x³+x²+x)÷x',r:'x2+x+1'},
+    {p:'(20x⁴−15x³+10x²)÷5x²',r:'4x2−3x+2'},{p:'(6x⁴+3x³−9x²)÷3x²',r:'2x2+x−3'},
+  ]
+};
+
+let pTipo='todos', pCorr=0, pTotal=0, pResp='', pInput='', pLocked=false;
+
+function getPool(){
+  if(pTipo==='todos') return [...EJERCICIOS.suma,...EJERCICIOS.resta,...EJERCICIOS.mult,...EJERCICIOS.div];
+  return EJERCICIOS[pTipo]||[];
+}
+function setPTipo(btn,t){
+  pTipo=t;
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  newEj();
+}
+function newEj(){
+  const pool=getPool();
+  const ej=pool[Math.floor(Math.random()*pool.length)];
+  pResp=ej.r;
+  pInput='';
+  pLocked=false;
+  document.getElementById('ejDisplay').textContent=ej.p+' = ?';
+  const sc=document.getElementById('pScreen');
+  sc.textContent='_';
+  sc.style.borderColor='var(--a5)';
+  sc.style.color='var(--a1)';
+  sc.style.background='var(--a8)';
+  const msg=document.getElementById('rMsg');
+  msg.style.display='none';
+}
+function renderScreen(){
+  const disp=pInput.replace(/x2/g,'x²').replace(/x3/g,'x³').replace(/x4/g,'x⁴').replace(/x5/g,'x⁵').replace(/y2/g,'y²');
+  document.getElementById('pScreen').textContent=disp||'_';
+}
+function kp(v){
+  if(pLocked) return;
+  pInput+=v;
+  renderScreen();
+}
+function kBack(){
+  if(pLocked) return;
+  if(/x[2-5]$|y2$/.test(pInput)) pInput=pInput.slice(0,-2);
+  else pInput=pInput.slice(0,-1);
+  renderScreen();
+}
+function kClear(){
+  if(pLocked) return;
+  pInput='';
+  renderScreen();
+  document.getElementById('rMsg').style.display='none';
+  const sc=document.getElementById('pScreen');
+  sc.style.borderColor='var(--a5)';
+  sc.style.color='var(--a1)';
+  sc.style.background='var(--a8)';
+}
+function norm(s){return s.replace(/\s/g,'').replace(/\+-/g,'-').replace(/−/g,'-').toLowerCase();}
+function checkP(){
+  if(pLocked||!pInput||!pResp) return;
+  pLocked=true;
+  pTotal++;
+  const ok=norm(pInput)===norm(pResp);
+  if(ok) pCorr++;
+  const sc=document.getElementById('pScreen');
+  const msg=document.getElementById('rMsg');
+  if(ok){
+    sc.style.borderColor='#4caf50';sc.style.background='#c8e6c9';sc.style.color='#1b5e20';
+    msg.textContent='✅ ¡Correcto! Excelente trabajo.';
+    msg.style.cssText='display:block;background:#c8e6c9;color:#1b5e20;padding:14px;border-radius:12px;font-weight:600;margin-top:12px;';
+  } else {
+    const ans=pResp.replace(/x2/g,'x²').replace(/x3/g,'x³').replace(/x4/g,'x⁴').replace(/y2/g,'y²');
+    sc.style.borderColor='#f44336';sc.style.background='#ffcdd2';sc.style.color='#b71c1c';
+    msg.textContent='❌ Incorrecto. La respuesta correcta era: '+ans;
+    msg.style.cssText='display:block;background:#ffcdd2;color:#b71c1c;padding:14px;border-radius:12px;font-weight:600;margin-top:12px;';
+  }
+  document.getElementById('pCorrect').textContent=pCorr;
+  document.getElementById('pTotal').textContent=pTotal;
+  const pct=pTotal>0?Math.round((pCorr/pTotal)*100):0;
+  document.getElementById('pPct').textContent=pct+'%';
+  document.getElementById('pBar').style.width=pct+'%';
+}
+</script>
+</body>
+</html>
